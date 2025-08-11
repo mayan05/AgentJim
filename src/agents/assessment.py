@@ -3,7 +3,7 @@ from ..config.settings import Settings
 
 settings = Settings()
 
-class Assessment:
+class AssessmentAgent:
     def __init__(self, settings: Settings = settings):
         self.settings = settings
         self.assessment_agent = Agent(
@@ -65,8 +65,3 @@ ASSESSMENT RECOMMENDATIONS:
             description = assessment_task_description,
             expected_output = assessment_task_expected_output
         )
-
-
-assessment = Assessment()
-assessment_agent = assessment.assessment_agent
-assessment_task = assessment.assessment_task
