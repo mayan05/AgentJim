@@ -1,4 +1,7 @@
 from crewai import Agent, Task
+from ..config.settings import Settings
+
+settings = Settings()
 
 assessment_agent = Agent(
     role="You are an experienced fitness consultant and health assessment specialist with 10+ years of experience in personal training, nutrition counseling, and goal-setting for diverse clients",
@@ -6,7 +9,10 @@ assessment_agent = Agent(
     backstory="You've worked with thousands of clients ranging from complete beginners to advanced athletes. You understand that successful fitness journeys require honest assessment of current状況, realistic goal-setting, and identifying both opportunities and constraints. You're skilled at asking the right follow-up questions to uncover important details clients might initially miss or downplay. Your assessment forms the foundation for all subsequent planning, so you prioritize thoroughness and accuracy over speed. You're also a natural communicator, able to translate complex fitness concepts into simple, actionable steps for clients",
     stream=True,
     max_iter=5,
-    verbose=True
+    verbose=True,
+    memory=True,
+    reasoning=True,
+    llm=settings.openai_llm
 )
 
 assessment_task = Task(
