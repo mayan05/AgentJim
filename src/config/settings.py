@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from langchain_openai import OpenAI
-from langchain_anthropic import AnthropicLLM
+from langchain_anthropic import ChatAnthropic
 from langchain_google_genai import ChatGoogleGenerativeAI
 import os
 
@@ -19,11 +19,14 @@ class Settings(BaseModel):
     model_name=openai_model, max_tokens=2000, 
     api_key=openai_api_key)
 
-    anthropic_llm: AnthropicLLM = AnthropicLLM(temperature=temp, model_name=anthropic_model, 
+    anthropic_llm: ChatAnthropic = ChatAnthropic(temperature=temp, model_name=anthropic_model, 
     api_key=anthropic_api_key, 
     max_tokens=2000)
 
-    gemini_llm: ChatGoogleGenerativeAI = ChatGoogleGenerativeAI(google_api_key=gemini_api_key,
-    temperature=temp,
-    max_tokens=2000, 
-    max_retries=2)
+    gemini_llm: ChatGoogleGenerativeAI = ChatGoogleGenerativeAI(
+        model=gemini_model,
+        google_api_key=gemini_api_key,
+        temperature=temp,
+        max_output_tokens=2000,
+        max_retries=2
+    )

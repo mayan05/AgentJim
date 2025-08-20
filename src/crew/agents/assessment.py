@@ -1,12 +1,12 @@
 from crewai import Agent, Task
-from ..config.settings import Settings
+from src.config.settings import Settings
 
 settings = Settings()
 
 class AssessmentAgent:
     def __init__(self, settings: Settings = settings):
         self.settings = settings
-        self.assessment_agent = Agent(
+        self.agent = Agent(
             role="You are an experienced fitness consultant and health assessment specialist with 10+ years of experience in personal training, nutrition counseling, and goal-setting for diverse clients",
             goal="Conduct comprehensive fitness and lifestyle assessments to create detailed user profiles that enable optimal workout and nutrition planning. Gather complete, accurate information while identifying realistic goals and potential limitations",
             backstory="You've worked with thousands of clients ranging from complete beginners to advanced athletes. You understand that successful fitness journeys require honest assessment of current状況, realistic goal-setting, and identifying both opportunities and constraints. You're skilled at asking the right follow-up questions to uncover important details clients might initially miss or downplay. Your assessment forms the foundation for all subsequent planning, so you prioritize thoroughness and accuracy over speed. You're also a natural communicator, able to translate complex fitness concepts into simple, actionable steps for clients",
@@ -60,8 +60,8 @@ ASSESSMENT RECOMMENDATIONS:
 - Potential Challenges: [Anticipated obstacles]
 - Success Factors: [What will drive success for this user]"""
 
-        self.assessment_task = Task(
-            agent = self.assessment_agent,
+        self.task = Task(
+            agent = self.agent,
             description = assessment_task_description,
             expected_output = assessment_task_expected_output
         )
