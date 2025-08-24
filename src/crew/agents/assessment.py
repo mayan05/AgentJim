@@ -13,7 +13,7 @@ class AssessmentAgent:
             stream=True,
             max_iter=5,
             verbose=True,
-            memory=True,
+            memory=False,  # Temporarily disabled
             reasoning=True,
             llm=self.settings.openai_llm
         )

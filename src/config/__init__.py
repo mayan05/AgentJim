@@ -1,1 +1,0 @@
-"Imported Settings from the configuration file"

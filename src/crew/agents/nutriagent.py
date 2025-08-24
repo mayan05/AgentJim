@@ -1,5 +1,5 @@
 from crewai import Agent, Task
-from config.settings import Settings
+from src.config.settings import Settings
 
 settings = Settings()
 
@@ -15,7 +15,7 @@ class NutritionAgent:
             stream=True,
             max_iter=5,
             verbose=True,
-            memory=True,
+            memory=False,  # Temporarily disabled
             reasoning=True,
         )
 
