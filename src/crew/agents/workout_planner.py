@@ -20,6 +20,7 @@ class WorkoutPlanner():
         )
 
         self.task = Task(
+            name='Workout Planner',
             agent=self.agent,
             description="""Using the complete user assessment profile, design a comprehensive weekly workout split that matches their goals, fitness level, available time, and equipment. Consider their physical limitations, schedule preferences, and experience level. Create a progressive program that can be sustained long-term with clear exercise selections, sets, reps, and rest periods. Include warm-up and cool-down routines, and provide exercise alternatives for different equipment scenarios.""",
             expected_output="""WEEKLY WORKOUT PLAN
