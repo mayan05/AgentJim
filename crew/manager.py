@@ -1,5 +1,5 @@
 from crewai import Crew, Process
-from src.crew.agents import assessment, nutriagent, workout_planner
+from crew.agents import assessment, nutriagent, workout_planner
 
 ass_agent = assessment.AssessmentAgent()
 nutri = nutriagent.NutritionAgent()
