@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
-from datetime import datetime
+from datetime import datetime, timezone
 
 Base = declarative_base()
 
@@ -14,7 +14,7 @@ class User(Base):
     gender = Column(String(20))
     height = Column(String(20))
     current_weight = Column(String(20))
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     
     # Relationships
     assessments = relationship("Assessment", back_populates="user")
@@ -27,7 +27,7 @@ class Assessment(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"))
     assessment_data = Column(Text)  # Store the full assessment as JSON/text
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     
     # Relationship
     user = relationship("User", back_populates="assessments")
@@ -38,7 +38,7 @@ class WorkoutPlan(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"))
     plan_data = Column(Text)  # Store the full workout plan
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     
     # Relationship
     user = relationship("User", back_populates="workout_plans")
@@ -49,7 +49,7 @@ class NutritionPlan(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"))
     plan_data = Column(Text)  # Store the full nutrition plan
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     
     # Relationship
     user = relationship("User", back_populates="nutrition_plans")
