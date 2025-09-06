@@ -12,7 +12,7 @@ crew = Crew(
     cache=True,
     process=Process.sequential,
     verbose=True,
-    memory=False  # Temporarily disabled due to path length issue
+    memory=False  # Disabled due to path length issue
 )
 
 if __name__ == "__main__":
