@@ -16,7 +16,7 @@ class WorkoutPlanner():
             verbose=True,
             memory=False,  # Temporarily disabled
             reasoning=True,
-            llm=self.settings.anthropic_llm
+            llm=self.settings.gemini_llm
         )
 
         self.task = Task(

@@ -12,7 +12,7 @@ class Settings:
         self.gemini_api_key = os.environ.get("GEMINI_API_KEY", None)
         
         self.anthropic_model = "claude-3-7-sonnet-20250219"
-        self.gemini_model = "gemini-2.5-pro"  # Fixed: removed the "gemini/" prefix
+        self.gemini_model = "gemini-1.5-pro"  # Using stable Gemini 1.5 Pro model
         
         self.temp = 0.7
         

@@ -4,9 +4,11 @@ from crew.database_manager import DatabaseManager
 from db.database import create_tables
 
 class FitnessCrewManager:
-    def __init__(self):
-        # Ensure database tables exist
-        create_tables()
+    def __init__(self, local_only: bool = False):
+        self.local_only = local_only
+        # Ensure database tables exist when not in local-only mode
+        if not self.local_only:
+            create_tables()
         
         # Initialize agents
         self.ass_agent = assessment.AssessmentAgent()
@@ -25,31 +27,42 @@ class FitnessCrewManager:
         )
     
     def process_user_request(self, user_input: str):
-        """Main method to process user request and save to database"""
+        """Main method to process user request. When local_only, skips database."""
+        # Run the crew first
+        print("🔄 Running AI agents...")
+        result = self.crew.kickoff({"input": user_input})
+
+        # Extract individual results
+        assessment_result = str(result.tasks_output[0]) if len(result.tasks_output) > 0 else ""
+        workout_result = str(result.tasks_output[1]) if len(result.tasks_output) > 1 else ""
+        nutrition_result = str(result.tasks_output[2]) if len(result.tasks_output) > 2 else ""
+
+        if self.local_only:
+            # Local-only: do not touch DB
+            return {
+                "success": True,
+                "user_id": None,
+                "assessment_id": None,
+                "workout_id": None,
+                "nutrition_id": None,
+                "assessment": assessment_result,
+                "workout_plan": workout_result,
+                "nutrition_plan": nutrition_result
+            }
+
+        # DB-backed flow
         db_manager = DatabaseManager()
-        
         try:
-            # Create user session
             user_id = db_manager.create_user_session(user_input)
             print(f"✅ Created user session with ID: {user_id}")
-            
-            # Run the crew
-            print("🔄 Running AI agents...")
-            result = self.crew.kickoff({"input": user_input})
-            
-            # Extract individual results
-            assessment_result = str(result.tasks_output[0]) if len(result.tasks_output) > 0 else ""
-            workout_result = str(result.tasks_output[1]) if len(result.tasks_output) > 1 else ""
-            nutrition_result = str(result.tasks_output[2]) if len(result.tasks_output) > 2 else ""
-            
-            # Save results to database
+
             print("💾 Saving results to database...")
             assessment_record = db_manager.save_assessment(user_id, assessment_result)
             workout_record = db_manager.save_workout_plan(user_id, workout_result)
             nutrition_record = db_manager.save_nutrition_plan(user_id, nutrition_result)
-            
+
             print("✅ All data saved successfully!")
-            
+
             return {
                 "success": True,
                 "user_id": user_id,
@@ -60,7 +73,6 @@ class FitnessCrewManager:
                 "workout_plan": workout_result,
                 "nutrition_plan": nutrition_result
             }
-            
         except Exception as e:
             print(f"❌ Error: {str(e)}")
             return {
@@ -70,8 +82,8 @@ class FitnessCrewManager:
         finally:
             db_manager.close()
 
-# Create global instance for FastAPI to use
-fitness_manager = FitnessCrewManager()
+# Create global instance for FastAPI or other imports (DB-enabled by default)
+fitness_manager = FitnessCrewManager(local_only=False)
 
 # For direct testing
 if __name__ == "__main__":
@@ -90,13 +102,17 @@ I usually skip breakfast, have a light lunch, and tend to eat my biggest meal at
 
 Can you help me create a workout and nutrition plan?"""
     
-    print("🚀 Starting AgentJim test...")
-    result = fitness_manager.process_user_request(test_input)
+    print("🚀 Starting AgentJim local-only test (Gemini)...")
+    local_manager = FitnessCrewManager(local_only=True)
+    result = local_manager.process_user_request(test_input)
     
     if result["success"]:
-        print(f"\n🎉 SUCCESS! User ID: {result['user_id']}")
-        print(f"📊 Assessment ID: {result['assessment_id']}")
-        print(f"💪 Workout ID: {result['workout_id']}")
-        print(f"🥗 Nutrition ID: {result['nutrition_id']}")
+        print("\n🎉 SUCCESS! (Local-only run, no DB writes)")
+        print("\n— Assessment Preview —\n")
+        print(result['assessment'][:1200])
+        print("\n— Workout Plan Preview —\n")
+        print(result['workout_plan'][:1200])
+        print("\n— Nutrition Plan Preview —\n")
+        print(result['nutrition_plan'][:1200])
     else:
         print(f"💥 FAILED: {result['error']}")
