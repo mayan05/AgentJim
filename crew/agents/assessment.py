@@ -14,8 +14,8 @@ class AssessmentAgent:
             max_iter=5,
             verbose=True,
             memory=False,  # Temporarily disabled
-            reasoning=True,
-            llm=self.settings.anthropic_llm
+            reasoning=False,
+            llm=self.settings.groq_llm
         )
 
         assessment_task_description = """Conduct a comprehensive fitness and lifestyle assessment for the user. Gather all necessary information including current fitness level, goals, available resources, constraints, and preferences. Ask follow-up questions if any critical information is missing. Analyze the collected data to identify realistic expectations and potential challenges. Create a complete user profile that will serve as the foundation for workout and nutrition planning."""

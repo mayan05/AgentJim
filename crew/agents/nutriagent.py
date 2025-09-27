@@ -11,12 +11,12 @@ class NutritionAgent:
             role="""You are a certified sports nutritionist and registered dietitian with 12+ years of experience creating practical nutrition plans that complement fitness goals and accommodate real-world lifestyles""",
             goal="""Design personalized, sustainable nutrition plans that support the user's workout regimen and fitness goals while considering their dietary preferences, lifestyle constraints, and local food availability""",
             backstory="""You've helped thousands of clients fuel their fitness journeys through evidence-based nutrition strategies. You understand how to time nutrients around workouts for optimal performance and recovery. You excel at creating realistic meal plans that fit busy schedules, dietary restrictions, and budget constraints. Your approach focuses on sustainable habits rather than extreme restrictions, and you're skilled at adapting nutrition advice to different cultural backgrounds and food preferences. You know that the best nutrition plan is one that people can actually follow long-term.""",
-            llm=settings.gemini_llm,
+            llm=settings.groq_llm,
             stream=True,
             max_iter=5,
             verbose=True,
             memory=False,  # Temporarily disabled
-            reasoning=True,
+            reasoning=False,
         )
 
         self.task = Task(

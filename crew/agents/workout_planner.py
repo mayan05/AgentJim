@@ -15,8 +15,8 @@ class WorkoutPlanner():
             max_iter=5,
             verbose=True,
             memory=False,  # Temporarily disabled
-            reasoning=True,
-            llm=self.settings.gemini_llm
+            reasoning=False,
+            llm=self.settings.groq_llm
         )
 
         self.task = Task(

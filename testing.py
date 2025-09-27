@@ -116,7 +116,7 @@ def main():
         crew_success = test_crewai_with_groq()
         
         if crew_success:
-            print(f"\n🎉Testing is correctly.")
+            print(f"\n🎉Testing is successfully completed.")
         else:
             print(f"\n⚠️ Direct API works but CrewAI integration has issues.")
     else:
