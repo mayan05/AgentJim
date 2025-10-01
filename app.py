@@ -41,8 +41,8 @@ with st.sidebar:
     ])
     
     st.subheader("⏰ Availability")
-    workout_days = st.slider("Days per week", 1, 7, 4)
-    session_time = st.slider("Minutes per session", 15, 120, 45)
+    workout_days = st.slider("Days per week", min_value=1, max_value=7, value=4)
+    session_time = st.slider("Minutes per session", min_value=15, max_value=120, value=45, step=5)
 
 # Main content area
 col1, col2 = st.columns([2, 1])
@@ -74,7 +74,7 @@ with col2:
     if st.button("Create My Fitness Plan", type="primary", use_container_width=True):
         if name and nationality and user_details:
             # Build complete user input
-            secondary_goal_text = f" My secondary goal is {secondary_goal.lower()}." if secondary_goal != "None" else ""
+            secondary_goal_text = f" My secondary goal is {secondary_goal.lower()}." if secondary_goal else ""
             
             complete_input = f"""Hi! I'm {name}, a {age}-year-old {gender.lower()} from {nationality}. My height is {height} cm and I currently weigh {weight} kg. 
             
@@ -86,99 +86,11 @@ Additional details about me:
 Can you help me create a workout and nutrition plan that considers my cultural background and local food availability?"""
 
             # Show loading
-            with st.spinner("🤖 AI agents are working on your personalized plan..."):
-                progress_bar = st.progress(0)
-                status_text = st.empty()
-                
-                # Simulate progress updates
-                status_text.text("🔍 Assessment agent analyzing your profile...")
-                progress_bar.progress(25)
-                time.sleep(1)
-                
-                status_text.text("💪 Workout planner designing your routine...")
-                progress_bar.progress(50)
-                
-                result = fitness_manager.process_user_request(complete_input)
-                
-                status_text.text("🥗 Nutrition agent creating your meal plan...")
-                progress_bar.progress(75)
-                time.sleep(0.5)
-                
-                status_text.text("✨ Finalizing your personalized plan...")
-                progress_bar.progress(100)
-                time.sleep(0.5)
-            
-            # Clear progress indicators
-            progress_bar.empty()
-            status_text.empty()
-            
-            if result["success"]:
-                st.success("✅ Your personalized plan is ready!")
-                
-                # Store results in session state
-                st.session_state.assessment = result["assessment"]
-                st.session_state.workout_plan = result["workout_plan"]
-                st.session_state.nutrition_plan = result["nutrition_plan"]
-                st.session_state.plan_generated = True
-                st.session_state.user_name = name
-                
-            else:
-                st.error(f"❌ Error: {result['error']}")
+            with st.spinner(""):
+                st.text("The server is still in maintenance mode. Please try again later.")
+        
         else:
-            st.warning("Please fill in your name, nationality, and additional details!")
-
-# Display results if available
-if hasattr(st.session_state, 'plan_generated') and st.session_state.plan_generated:
-    st.divider()
-    st.header(f"📋 Your Personalized Fitness Plan, {st.session_state.user_name}!")
-    
-    # Create tabs for different sections
-    tab1, tab2, tab3 = st.tabs(["📊 Assessment", "💪 Workout Plan", "🥗 Nutrition Plan"])
-    
-    with tab1:
-        st.subheader("User Assessment Profile")
-        st.text_area("Assessment Details", st.session_state.assessment, height=400, disabled=True)
-        
-        # Download button
-        st.download_button(
-            label="📥 Download Assessment",
-            data=st.session_state.assessment,
-            file_name=f"{st.session_state.user_name}_assessment.txt",
-            mime="text/plain"
-        )
-        
-    with tab2:
-        st.subheader("Weekly Workout Plan")
-        st.text_area("Workout Details", st.session_state.workout_plan, height=400, disabled=True)
-        
-        # Download button
-        st.download_button(
-            label="📥 Download Workout Plan",
-            data=st.session_state.workout_plan,
-            file_name=f"{st.session_state.user_name}_workout_plan.txt",
-            mime="text/plain"
-        )
-        
-    with tab3:
-        st.subheader("Personalized Nutrition Plan")
-        st.text_area("Nutrition Details", st.session_state.nutrition_plan, height=400, disabled=True)
-        
-        # Download button
-        st.download_button(
-            label="📥 Download Nutrition Plan",
-            data=st.session_state.nutrition_plan,
-            file_name=f"{st.session_state.user_name}_nutrition_plan.txt",
-            mime="text/plain"
-        )
-    
-    # Reset button
-    st.divider()
-    if st.button("🔄 Create New Plan", type="secondary"):
-        # Clear session state
-        for key in ['assessment', 'workout_plan', 'nutrition_plan', 'plan_generated', 'user_name']:
-            if key in st.session_state:
-                del st.session_state[key]
-        st.rerun()
+            st.warning("Have you filled in your name, nationality, and additional details?!")
 
 # Footer
 st.divider()
