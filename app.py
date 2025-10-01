@@ -1,6 +1,10 @@
 import streamlit as st
 from crew.manager import fitness_manager
-import time
+import requests
+import os
+from config.settings import User, PlanRequest
+
+server_url = os.environ.get("SERVER_URL")
 
 # Page config
 st.set_page_config(
@@ -84,10 +88,33 @@ Additional details about me:
 {user_details}
 
 Can you help me create a workout and nutrition plan that considers my cultural background and local food availability?"""
+            
+            # COMPELETE USER DETAILS
+            user_deets = PlanRequest(
+                user=User(
+                    name=name,
+                    age=age,
+                    gender=gender,
+                    nationality=nationality,
+                    height=height
+                ),
+                weight=weight,
+                primary_goal=primary_goal,
+                secondary_goal=secondary_goal,
+                workout_days=workout_days,
+                session_time=session_time,
+                additional_details=user_details
+            )
 
             # Show loading
-            with st.spinner(""):
-                st.text("The server is still in maintenance mode. Please try again later.")
+            with st.spinner("Agents are working on your plan. Please wait..."):
+                try:
+                    plan = requests.post(url=server_url, json=user_deets.model_dump())
+                    data = plan.json()
+                    st.success("Your plan is ready!\n\n Here's a preview:")
+                    st.write(data)
+                except Exception as e:
+                    st.error(f"Error: {e}")
         
         else:
             st.warning("Have you filled in your name, nationality, and additional details?!")

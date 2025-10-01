@@ -2,8 +2,26 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 import os
 from dotenv import load_dotenv
 from langchain_groq.chat_models import ChatGroq
+from pydantic import BaseModel
+from typing import Literal, List
 
 load_dotenv()
+
+class User(BaseModel):
+    name : str | None = None
+    age : int | None = None
+    gender: List[Literal["Male", "Female", "Non-binary", "Prefer not to say"]] 
+    nationality: str | None = None
+    height: int | float | None = None
+
+class PlanRequest(BaseModel):
+    user: User
+    weight: int | float 
+    primary_goal: Literal["Weight Loss", "Muscle Gain", "General Fitness", "Strength Training", "Endurance", "Toning"]
+    secondary_goal: List[Literal["Weight Loss", "Muscle Gain", "General Fitness", "Strength Training", "Endurance", "Toning", "Flexibility", "Better Sleep", "Stress Relief", "Increased Energy"]] | None
+    workout_days: int | None
+    session_time: int | None
+    additional_details: str | None
 
 class Settings:
     def __init__(self):
