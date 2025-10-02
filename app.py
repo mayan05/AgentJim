@@ -4,7 +4,7 @@ import requests
 import os
 from config.settings import User, PlanRequest
 
-server_url = os.environ.get("SERVER_URL")
+server_url = os.environ.get("FASTAPI_URL")
 
 # Page config
 st.set_page_config(
@@ -109,10 +109,13 @@ Can you help me create a workout and nutrition plan that considers my cultural b
             # Show loading
             with st.spinner("Agents are working on your plan. Please wait..."):
                 try:
-                    plan = requests.post(url=server_url, json=user_deets.model_dump())
+                    plan = requests.post(url=f"{server_url}/plan", json=user_deets.model_dump())
                     data = plan.json()
-                    st.success("Your plan is ready!\n\n Here's a preview:")
-                    st.write(data)
+                    if plan.status_code == 200:
+                        st.success("Your plan is ready!\n Here's a preview:")
+                        st.write(data["message"])
+                    else:
+                        st.error(f"Error: {data['message']}")
                 except Exception as e:
                     st.error(f"Error: {e}")
         

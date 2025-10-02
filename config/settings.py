@@ -10,15 +10,15 @@ load_dotenv()
 class User(BaseModel):
     name : str | None = None
     age : int | None = None
-    gender: List[Literal["Male", "Female", "Non-binary", "Prefer not to say"]] 
+    gender: Literal["Male", "Female", "Non-binary", "Prefer not to say"] 
     nationality: str | None = None
     height: int | float | None = None
 
 class PlanRequest(BaseModel):
-    user: User
+    user: User | None
     weight: int | float 
     primary_goal: Literal["Weight Loss", "Muscle Gain", "General Fitness", "Strength Training", "Endurance", "Toning"]
-    secondary_goal: List[Literal["Weight Loss", "Muscle Gain", "General Fitness", "Strength Training", "Endurance", "Toning", "Flexibility", "Better Sleep", "Stress Relief", "Increased Energy"]] | None
+    secondary_goal: Literal["Weight Loss", "Muscle Gain", "General Fitness", "Strength Training", "Endurance", "Toning", "Flexibility", "Better Sleep", "Stress Relief", "Increased Energy"] | None
     workout_days: int | None
     session_time: int | None
     additional_details: str | None
