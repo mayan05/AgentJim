@@ -1,11 +1,13 @@
 from fastapi import FastAPI
 import uvicorn
-from fastapi.meiddleware.cors import CORSMiddleware
+import json
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from config.settings import PlanRequest, User
-from crew.manager import fitness_manager
+from crew.manager import FitnessCrewManager
 
 app = FastAPI(name="Agent Jim Server")
+manager = FitnessCrewManager()
 
 app.add_middleware(
     CORSMiddleware,
@@ -44,7 +46,8 @@ def create_plan(request: PlanRequest):
             f"Can you help me create a workout and nutrition plan that considers my background and preferences?"
         )
 
-        result = fitness_manager.process_user_request(user_input)
+        print(f"🔍 User input being sent to AI: {user_input}")
+        result = manager.process_user_request(user_input)
 
         if not result.get("success"):
             error_msg = result.get("error", "Unknown error")
@@ -71,4 +74,4 @@ def create_plan(request: PlanRequest):
         return JSONResponse(status_code=500, content={"message": str(e)})
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run("server:app", host="127.0.0.1", port=8000, reload=True)

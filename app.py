@@ -1,5 +1,6 @@
 import streamlit as st
-from crew.manager import fitness_manager
+from crew.manager import FitnessCrewManager
+import json
 import requests
 import os
 from config.settings import User, PlanRequest
@@ -23,7 +24,7 @@ with st.sidebar:
     
     # Basic info
     name = st.text_input("Name", placeholder="e.g., Sarah")
-    age = st.number_input("Age", min_value=16, max_value=80, value=25)
+    age = st.number_input("Age", min_value=16, max_value=80, value=20)
     gender = st.selectbox("Gender", ["Male", "Female", "Non-binary", "Prefer not to say"])
     nationality = st.text_input("Nationality/Country", placeholder="e.g., Indian, American, British")
     
@@ -49,7 +50,7 @@ with st.sidebar:
     session_time = st.slider("Minutes per session", min_value=15, max_value=120, value=45, step=5)
 
 # Main content area
-col1, col2 = st.columns([2, 1])
+col1, col2 = st.columns([1, 1])
 
 with col1:
     st.subheader("💬 Additional Details")
@@ -76,20 +77,7 @@ with col2:
         st.write(f"**Availability:** {workout_days} days/week, {session_time} min/session")
     
     if st.button("Create My Fitness Plan", type="primary", use_container_width=True):
-        if name and nationality and user_details:
-            # Build complete user input
-            secondary_goal_text = f" My secondary goal is {secondary_goal.lower()}." if secondary_goal else ""
-            
-            complete_input = f"""Hi! I'm {name}, a {age}-year-old {gender.lower()} from {nationality}. My height is {height} cm and I currently weigh {weight} kg. 
-            
-My primary goal is {primary_goal.lower()}.{secondary_goal_text} I can work out {workout_days} days per week for about {session_time} minutes per session.
-
-Additional details about me:
-{user_details}
-
-Can you help me create a workout and nutrition plan that considers my cultural background and local food availability?"""
-            
-            # COMPELETE USER DETAILS
+        if nationality and user_details and name:
             user_deets = PlanRequest(
                 user=User(
                     name=name,
@@ -109,18 +97,41 @@ Can you help me create a workout and nutrition plan that considers my cultural b
             # Show loading
             with st.spinner("Agents are working on your plan. Please wait..."):
                 try:
-                    plan = requests.post(url=f"{server_url}/plan", json=user_deets.model_dump())
-                    data = plan.json()
-                    if plan.status_code == 200:
-                        st.success("Your plan is ready!\n Here's a preview:")
-                        st.write(data["message"])
+                    response = requests.post(url=f"{server_url}/plan", json=user_deets.model_dump(), timeout=60)
+                    plan = response.json()
+                    if response.status_code == 200:
+                        # Store the plan in session state to display it below
+                        st.session_state['fitness_plan'] = plan
+                        st.success("🎉 Your plan is ready!")
+                        st.rerun()
                     else:
-                        st.error(f"Error: {data['message']}")
+                        st.error(f"Error: {plan['message']}")
                 except Exception as e:
                     st.error(f"Error: {e}")
         
         else:
             st.warning("Have you filled in your name, nationality, and additional details?!")
+
+# Display the plan below the columns, centered
+if 'fitness_plan' in st.session_state:
+    st.markdown("---")
+    st.markdown("## 📋 Your Personalized Fitness Plan")
+    st.markdown("---")
+    
+    # Display the plan in a centered container with styling
+    st.markdown("""
+    <div style="
+        background-color: #f0f2f6;
+        padding: 20px;
+        border-radius: 10px;
+        border-left: 5px solid #ff6b6b;
+        margin: 20px 0;
+    ">
+    """, unsafe_allow_html=True)
+    
+    st.markdown(st.session_state['fitness_plan']["message"])
+    
+    st.markdown("</div>", unsafe_allow_html=True)
 
 # Footer
 st.divider()
