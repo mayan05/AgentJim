@@ -2,7 +2,7 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 import os
 from dotenv import load_dotenv
 from langchain_groq.chat_models import ChatGroq
-from pydantic import BaseModel
+from pydantic import BaseModel, SecretStr
 from typing import Literal, List
 
 load_dotenv()
@@ -44,7 +44,7 @@ class Settings:
 
         self.groq_llm = ChatGroq(
             model=self.groq_model,
-            api_key=self.groq_api_key,
+            api_key=SecretStr(self.groq_api_key) if self.groq_api_key else None,
             temperature=self.temp,
             max_tokens=1000,
             max_retries=2
