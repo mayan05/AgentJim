@@ -17,6 +17,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/")
+def read_root():
+    return {"message": "Hello, World!"}
+
 @app.post("/plan")
 def create_plan(request: PlanRequest):
     try:
@@ -74,4 +78,4 @@ def create_plan(request: PlanRequest):
         return JSONResponse(status_code=500, content={"message": str(e)})
 
 if __name__ == "__main__":
-    uvicorn.run("server:app", host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run("server:app", host="localhost", port=8000, reload=True)

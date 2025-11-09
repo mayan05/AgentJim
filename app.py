@@ -3,6 +3,7 @@ from crew.manager import FitnessCrewManager
 import json
 import requests
 import os
+from typing import cast, Literal
 from config.settings import User, PlanRequest
 
 server_url = os.environ.get("FASTAPI_URL")
@@ -82,13 +83,13 @@ with col2:
                 user=User(
                     name=name,
                     age=age,
-                    gender=gender,
+                    gender=cast(Literal["Male", "Female", "Non-binary", "Prefer not to say"], gender),
                     nationality=nationality,
                     height=height
                 ),
                 weight=weight,
-                primary_goal=primary_goal,
-                secondary_goal=secondary_goal,
+                primary_goal=cast(Literal["Weight Loss", "Muscle Gain", "General Fitness", "Strength Training", "Endurance", "Toning"], primary_goal),
+                secondary_goal=cast(Literal["Weight Loss", "Muscle Gain", "General Fitness", "Strength Training", "Endurance", "Toning", "Flexibility", "Better Sleep", "Stress Relief", "Increased Energy"] | None, secondary_goal if secondary_goal != "None" else None),
                 workout_days=workout_days,
                 session_time=session_time,
                 additional_details=user_details
