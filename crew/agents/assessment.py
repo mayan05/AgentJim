@@ -18,7 +18,10 @@ class AssessmentAgent:
             llm=self.settings.groq_llm
         )
 
-        assessment_task_description = """IMPORTANT: Use ONLY the information provided by the user in their input. Do NOT make up or invent any details. Extract and organize the user's actual information into the assessment format. If information is missing, note it as "Not specified" rather than inventing details. Conduct a comprehensive fitness and lifestyle assessment based on the user's provided information. Analyze the collected data to identify realistic expectations and potential challenges. Create a complete user profile that will serve as the foundation for workout and nutrition planning."""
+        assessment_task_description = """IMPORTANT: Use ONLY the information provided by the user in the input below. Do NOT make up or invent any details. Extract and organize the user's actual information into the assessment format. If information is missing, note it as "Not specified" rather than inventing details. Conduct a comprehensive fitness and lifestyle assessment based on the user's provided information. Analyze the collected data to identify realistic expectations and potential challenges. Create a complete user profile that will serve as the foundation for workout and nutrition planning.
+
+USER INPUT:
+{input}"""
 
         assessment_task_expected_output = """
     USER ASSESSMENT PROFILE

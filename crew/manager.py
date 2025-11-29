@@ -8,6 +8,10 @@ class FitnessCrewManager:
         self.nutri = nutriagent.NutritionAgent()
         self.workout = workout_planner.WorkoutPlanner()
         
+        # Explicitly link tasks to ensure sequential context passing
+        self.workout.task.context = [self.ass_agent.task]
+        self.nutri.task.context = [self.ass_agent.task, self.workout.task]
+        
         # Create crew
         self.crew = Crew(
             name='fitness_crew',
